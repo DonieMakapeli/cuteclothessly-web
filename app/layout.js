@@ -1,8 +1,10 @@
 import { Poppins, Dancing_Script } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import WhatsAppFAB from "./components/WhatsAppFAB";
+import CartSidebar from "./components/CartSidebar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -34,10 +36,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" className={`${poppins.variable} ${dancing.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <WhatsAppFAB />
+        <CartProvider>
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <WhatsAppFAB />
+          <CartSidebar />
+        </CartProvider>
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useCart } from "../context/CartContext";
 
 const navLinks = [
   { label: "Atasan", href: "#atasan" },
@@ -14,8 +15,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { totalItems, toggleCart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -33,8 +33,14 @@ export default function Navbar() {
 
   const handleCategoryClick = (href) => {
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Scroll to products section and set filter
+    const filterBtn = document.querySelector(`button[data-category="${href.replace('#', '')}"]`);
+    if (filterBtn) {
+      filterBtn.click();
+    } else {
+      const el = document.querySelector(href) || document.getElementById("products");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (
@@ -72,37 +78,20 @@ export default function Navbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            {/* Search */}
-            <div className="relative">
-              {searchOpen && (
-                <input
-                  type="text"
-                  placeholder="Cari produk cute..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="absolute right-10 top-1/2 -translate-y-1/2 w-48 md:w-64 px-4 py-2 text-sm bg-pink-50 border border-pink-200 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300 animate-slide-down"
-                  autoFocus
-                />
-              )}
-              <button
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 rounded-full text-neutral-400 hover:text-pink-500 hover:bg-pink-50 transition-all cursor-pointer"
-                aria-label="Search"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </button>
-            </div>
-
             {/* Cart */}
-            <button className="p-2 rounded-full text-neutral-400 hover:text-pink-500 hover:bg-pink-50 transition-all relative cursor-pointer" aria-label="Cart">
+            <button
+              onClick={toggleCart}
+              className="p-2 rounded-full text-neutral-400 hover:text-pink-500 hover:bg-pink-50 transition-all relative cursor-pointer"
+              aria-label="Cart"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
               </svg>
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-pink-400 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                0
-              </span>
+              {totalItems > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-pink-400 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-fade-in">
+                  {totalItems > 99 ? "99+" : totalItems}
+                </span>
+              )}
             </button>
 
             {/* Instagram */}
@@ -157,10 +146,7 @@ export default function Navbar() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-3 text-neutral-600 hover:text-pink-500 hover:bg-pink-50 rounded-xl transition-all font-medium"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-              </svg>
-              Instagram
+              📷 Instagram
             </a>
           </div>
         </div>

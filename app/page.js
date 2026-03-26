@@ -158,6 +158,7 @@ export default function Home() {
                 <button
                   id={cat.id}
                   key={cat.id}
+                  data-category={cat.id}
                   onClick={() => handleCategoryClick(cat.id)}
                   className={`px-5 py-2 text-xs font-semibold rounded-full transition-all duration-300 cursor-pointer whitespace-nowrap shrink-0 snap-start ${
                     activeCategory === cat.id
