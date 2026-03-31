@@ -6,10 +6,8 @@ import { useCart } from "../context/CartContext";
 
 const navLinks = [
   { label: "Atasan", href: "#atasan" },
-  { label: "Bawahan", href: "#bawahan" },
   { label: "Outerwear", href: "#outerwear" },
-  { label: "Skirts", href: "#skirts" },
-  { label: "Thrifting", href: "#thrifting" },
+  { label: "Rok & Bawahan", href: "#skirts" },
 ];
 
 export default function Navbar() {

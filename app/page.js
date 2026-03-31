@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ProductCard from "./components/ProductCard";
+import Testimonials from "./components/Testimonials";
 import { products, categories } from "./data/products";
 
 export default function Home() {
@@ -120,7 +121,7 @@ export default function Home() {
             {[
               { emoji: "🚚", text: "COD Sukabumi" },
               { emoji: "💕", text: "Cute & Trendy" },
-              { emoji: "♻️", text: "Thrift Available" },
+              { emoji: "♻️", text: "Preloved Quality" },
               { emoji: "💬", text: "Fast Response WA" },
             ].map((item) => (
               <div key={item.text} className="flex items-center justify-center gap-2">
@@ -190,6 +191,9 @@ export default function Home() {
           )}
         </div>
       </section>
+
+      {/* Testimonials */}
+      <Testimonials />
 
       {/* CTA Section */}
       <section className="bg-gradient-to-r from-pink-50 via-pink-100 to-pink-50 py-16 md:py-24">
